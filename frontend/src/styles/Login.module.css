@@ -1,0 +1,88 @@
+@reference '../index.css';
+
+.page {
+  @apply flex h-screen w-full;
+}
+
+/* ── Left Panel ── */
+.leftPanel {
+  @apply hidden lg:flex w-1/2 bg-blue-600 flex-col justify-between p-12 relative overflow-hidden;
+}
+
+.brandWrapper {
+  @apply relative z-10;
+}
+
+.brandName {
+  @apply text-white text-4xl font-extrabold tracking-tight mb-4;
+}
+
+.brandTagline {
+  @apply text-blue-100 text-lg font-medium leading-relaxed max-w-xs;
+}
+
+.decoration {
+  @apply absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-500 opacity-40;
+}
+
+/* ── Right Panel ── */
+.rightPanel {
+  @apply flex-1 flex items-center justify-center bg-gray-50 px-6;
+}
+
+.card {
+  @apply bg-white w-full max-w-md rounded-2xl shadow-xl p-10;
+}
+
+.cardHeader {
+  @apply mb-8;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-800 mb-1;
+}
+
+.subtitle {
+  @apply text-gray-500 text-sm;
+}
+
+/* ── Form ── */
+.form {
+  @apply flex flex-col gap-5;
+}
+
+.fieldGroup {
+  @apply flex flex-col gap-1;
+}
+
+.labelRow {
+  @apply flex items-center justify-between;
+}
+
+.label {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.forgotLink {
+  @apply text-xs text-blue-600 hover:underline;
+}
+
+.input {
+  @apply w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200;
+}
+
+.passwordWrapper {
+  @apply relative;
+}
+
+.passwordWrapper .input {
+  @apply pr-10;
+}
+
+.eyeBtn {
+  @apply absolute right-3 top-1/2 -translate-y-1/2 text-sm cursor-pointer bg-transparent border-none;
+}
+
+.submitBtn {
+  @apply w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200 mt-2;
+}

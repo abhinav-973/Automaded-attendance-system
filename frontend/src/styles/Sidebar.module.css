@@ -1,0 +1,73 @@
+@reference '../index.css'; 
+
+.sidebar {
+  @apply w-64 h-screen bg-white shadow-lg flex flex-col justify-between px-6 py-8 transition-all duration-300;
+}
+
+.collapsed {
+  @apply w-16 px-2;
+}
+
+.logo {
+  @apply text-2xl font-bold text-blue-600 mb-8 flex items-center justify-between;
+}
+
+.toggleBtn {
+  @apply ml-auto p-1 rounded hover:bg-gray-100 text-gray-500 cursor-pointer text-base;
+}
+
+.nav {
+  @apply flex flex-col gap-4;
+}
+
+.link {
+  @apply px-4 py-2 rounded-lg text-gray-700 font-medium transition duration-200 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-3;
+}
+
+.activeLink {
+  @apply px-4 py-2 rounded-lg bg-blue-100 text-blue-600 font-semibold flex items-center gap-3;
+}
+
+.footer {
+  @apply mt-10;
+}
+
+.logoutBtn {
+  @apply w-full px-4 py-2 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition duration-200 flex items-center gap-3;
+}
+
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal {
+  @apply bg-white rounded-xl p-6 w-80 flex flex-col gap-3 shadow-2xl;
+}
+
+.modalTitle {
+  @apply text-lg font-semibold text-gray-800 m-0;
+}
+
+.modalText {
+  @apply text-sm text-gray-500 m-0;
+}
+
+.modalButtons {
+  @apply flex gap-3 mt-2;
+}
+
+.confirmBtn {
+  @apply flex-1 py-2 bg-red-500 text-white font-semibold rounded-lg cursor-pointer border-none transition-colors;
+}
+
+.confirmBtn:hover {
+  @apply bg-red-600;
+}
+
+.cancelBtn {
+  @apply flex-1 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg cursor-pointer border-none transition-colors;
+}
+
+.cancelBtn:hover {
+  @apply bg-gray-200;
+}

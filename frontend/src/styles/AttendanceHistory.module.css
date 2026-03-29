@@ -1,0 +1,115 @@
+@reference '../index.css';
+
+.page {
+  @apply p-6 md:p-8 flex flex-col gap-6;
+}
+
+/* ── Header ── */
+.header {
+  @apply flex items-center justify-between;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-800;
+}
+
+.subtitle {
+  @apply text-sm text-gray-500 mt-1;
+}
+
+/* ── Filters ── */
+.filters {
+  @apply flex flex-col sm:flex-row gap-3 items-start sm:items-center;
+}
+
+.searchInput {
+  @apply px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 w-full sm:w-64;
+}
+
+.classFilters {
+  @apply flex gap-2 flex-wrap;
+}
+
+.filterBtn {
+  @apply px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-600 hover:bg-gray-100 transition duration-200 cursor-pointer;
+}
+
+.filterBtnActive {
+  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700;
+}
+
+/* ── Table ── */
+.tableWrapper {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden;
+}
+
+.table {
+  @apply w-full text-sm;
+}
+
+.tableHead {
+  @apply bg-gray-50 border-b border-gray-200;
+}
+
+.th {
+  @apply text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider;
+}
+
+.tableRow {
+  @apply border-b border-gray-100 hover:bg-blue-50 transition duration-150;
+}
+
+.td {
+  @apply px-6 py-4 text-gray-700;
+}
+
+/* ── Badges & Text ── */
+.classBadge {
+  @apply inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold;
+}
+
+.presentText {
+  @apply text-green-600 font-semibold;
+}
+
+.absentText {
+  @apply text-red-500 font-semibold;
+}
+
+.zeroText {
+  @apply text-gray-400 font-semibold;
+}
+
+/* ── Progress Bar ── */
+.progressWrapper {
+  @apply flex items-center gap-3;
+}
+
+.progressBar {
+  @apply flex-1 bg-gray-200 rounded-full h-2 overflow-hidden;
+}
+
+.progressFill {
+  @apply h-2 rounded-full transition-all duration-500;
+}
+
+.progressGreen {
+  @apply bg-green-500;
+}
+
+.progressYellow {
+  @apply bg-yellow-400;
+}
+
+.progressRed {
+  @apply bg-red-400;
+}
+
+.percentageText {
+  @apply text-xs font-semibold text-gray-600 w-10 text-right;
+}
+
+/* ── Empty State ── */
+.emptyState {
+  @apply text-center py-12 text-gray-400 text-sm;
+}
