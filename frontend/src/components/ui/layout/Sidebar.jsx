@@ -1,26 +1,29 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../../services/axiosInstance.js";
+import { clearStoredUser, getStoredUser } from "../../../utils/auth.js";
 import styles from "../../../styles/Sidebar.module.css";
 
-const Sidebar = ({ setIsAuthenticated, isCollapsed, setIsCollapsed }) => {
+const Sidebar = ({ setAuthState, isCollapsed, setIsCollapsed }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
+  const currentUser = getStoredUser();
+  const isAdmin = currentUser?.role === "admin";
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:3000/auth/logout",
-        {},
-        { withCredentials: true }
-      );
+      await axiosInstance.post("/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("loggedInUser");
-      setIsAuthenticated(false);
+      clearStoredUser();
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        isReady: true,
+      });
       setShowConfirm(false);
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   };
 
@@ -33,7 +36,7 @@ const Sidebar = ({ setIsAuthenticated, isCollapsed, setIsCollapsed }) => {
             className={styles.toggleBtn}
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            {isCollapsed ? "→" : "←"}
+            {isCollapsed ? ">" : "<"}
           </button>
         </div>
 
@@ -42,7 +45,7 @@ const Sidebar = ({ setIsAuthenticated, isCollapsed, setIsCollapsed }) => {
             to="/dashboard"
             className={({ isActive }) => isActive ? styles.activeLink : styles.link}
           >
-            <span>🏠</span>
+            <span>Home</span>
             {!isCollapsed && "Dashboard"}
           </NavLink>
 
@@ -50,21 +53,29 @@ const Sidebar = ({ setIsAuthenticated, isCollapsed, setIsCollapsed }) => {
             to="/history"
             className={({ isActive }) => isActive ? styles.activeLink : styles.link}
           >
-            <span>📅</span>
+            <span>Log</span>
             {!isCollapsed && "Attendance History"}
           </NavLink>
+
+          {isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) => isActive ? styles.activeLink : styles.link}
+            >
+              <span>CSV</span>
+              {!isCollapsed && "Admin Upload"}
+            </NavLink>
+          )}
         </nav>
 
         <div className={styles.footer}>
-          {/* Opens modal instead of logging out directly */}
           <button className={styles.logoutBtn} onClick={() => setShowConfirm(true)}>
-            <span>🚪</span>
+            <span>Out</span>
             {!isCollapsed && "Logout"}
           </button>
         </div>
       </aside>
 
-      {/* Confirmation Modal */}
       {showConfirm && (
         <div className={styles.overlay}>
           <div className={styles.modal}>

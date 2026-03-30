@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance.js";
+import { getStoredUser } from "../../utils/auth.js";
 import styles from "../../styles/Dashboard.module.css";
-import ClassCard from "./Classcard";
+import ClassCard from "./ClassCard.jsx";
 import RecentAttendance from "./RecentAttendance";
 
 const Dashboard = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const loggedInUser = getStoredUser();
 
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/dashboard/classes", {
-          withCredentials: true,
-        });
-        if (res.data.success) {
-          setClasses(res.data.classes);
+        const response = await axiosInstance.get("/dashboard/classes");
+        if (response.data.success) {
+          setClasses(response.data.classes);
         }
       } catch (error) {
         console.error("Error fetching classes:", error);
@@ -24,19 +23,17 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
+
     fetchClasses();
   }, []);
 
   return (
     <div className={styles.container}>
-
-      {/* Welcome */}
       <div className={styles.welcome}>
-        <h2>Welcome back, {loggedInUser?.name} 👋</h2>
-        <p>Select a class to take attendance.</p>
+        <h2>Welcome back, {loggedInUser?.name}</h2>
+        <p>Select a class, map students to the model if needed, then upload a classroom image to run attendance.</p>
       </div>
 
-      {/* Classes */}
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Your Classes</h3>
         {loading ? (
@@ -49,7 +46,7 @@ const Dashboard = () => {
               <ClassCard
                 key={cls._id}
                 id={cls._id}
-                label={cls.name}              // ← renamed from className
+                label={cls.name}
                 totalStudents={cls.totalStudents}
                 lastAttendance={cls.lastAttendance}
               />
@@ -58,12 +55,10 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Recent Attendance */}
       <div className={styles.section}>
         <h3 className={styles.sectionTitle}>Recent Attendance</h3>
         <RecentAttendance />
       </div>
-
     </div>
   );
 };

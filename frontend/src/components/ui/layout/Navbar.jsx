@@ -1,45 +1,44 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../../../services/axiosInstance.js";
+import { clearStoredUser, getStoredUser } from "../../../utils/auth.js";
 import styles from "../../../styles/Navbar.module.css";
 
-const Navbar = ({ title = "Dashboard", setIsAuthenticated }) => {
-  // ← fixed localStorage key
-  const teacher = JSON.parse(localStorage.getItem("loggedInUser"));
+const Navbar = ({ title = "Dashboard", setAuthState }) => {
+  const teacher = getStoredUser();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:3000/auth/logout",
-        {},
-        { withCredentials: true }
-      );
+      await axiosInstance.post("/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("loggedInUser");
-      setIsAuthenticated(false);
-      navigate("/login");
+      clearStoredUser();
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        isReady: true,
+      });
+      navigate("/login", { replace: true });
     }
   };
 
   return (
     <header className={styles.navbar}>
-
       <div className={styles.leftSection}>
         <h1 className={styles.title}>{title}</h1>
       </div>
@@ -60,9 +59,8 @@ const Navbar = ({ title = "Dashboard", setIsAuthenticated }) => {
         {open && (
           <div className={styles.dropdown}>
             <button className={styles.dropdownItem}>
-              Profile
+              {teacher?.role === "admin" ? "Admin" : "Teacher"}
             </button>
-            {/* ← logout now works */}
             <button
               className={styles.dropdownItem}
               onClick={handleLogout}
@@ -72,7 +70,6 @@ const Navbar = ({ title = "Dashboard", setIsAuthenticated }) => {
           </div>
         )}
       </div>
-
     </header>
   );
 };

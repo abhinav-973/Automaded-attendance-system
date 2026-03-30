@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../../services/axiosInstance.js";
 import styles from "../../styles/Dashboard.module.css";
 
 const RecentAttendance = () => {
@@ -9,12 +9,9 @@ const RecentAttendance = () => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/dashboard/recent-attendance",
-          { withCredentials: true }
-        );
-        if (res.data.success) {
-          setAttendance(res.data.attendance);
+        const response = await axiosInstance.get("/dashboard/recent-attendance");
+        if (response.data.success) {
+          setAttendance(response.data.attendance);
         }
       } catch (error) {
         console.error("Error fetching attendance:", error);
@@ -22,6 +19,7 @@ const RecentAttendance = () => {
         setLoading(false);
       }
     };
+
     fetchAttendance();
   }, []);
 

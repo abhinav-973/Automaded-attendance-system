@@ -1,24 +1,31 @@
-import express from 'express';
-import cors from 'cors';
-import router from './routes/auth.routes.js';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import csvRouter from './routes/csv.routes.js';
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import router from "./routes/auth.routes.js";
+import csvRouter from "./routes/csv.routes.js";
 import attendanceRouter from "./routes/attendance.routes.js";
-import dashboardRouter from "./routes/dashboard.routes.js"; // ← add
+import dashboardRouter from "./routes/dashboard.routes.js";
+import studentRouter from "./routes/student.routes.js";
+import { corsOriginHandler } from "./config/env.js";
 
 const app = express();
 
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: "10mb" }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
+    origin: corsOriginHandler,
+    credentials: true,
 }));
 
-app.use('/auth',       router);
-app.use('/csv',        csvRouter);
-app.use('/attendance', attendanceRouter);
-app.use('/dashboard',  dashboardRouter); // ← add
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
+app.use("/auth", router);
+app.use("/csv", csvRouter);
+app.use("/attendance", attendanceRouter);
+app.use("/dashboard", dashboardRouter);
+app.use("/students", studentRouter);
 
 export default app;

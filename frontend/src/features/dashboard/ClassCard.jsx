@@ -1,8 +1,8 @@
 import styles from "../../styles/Dashboard.module.css";
 import TakeAttendance from "../attendance/TakeAttendance.jsx";
+import StudentIdentityModal from "../students/StudentIdentityModal.jsx";
 
 const ClassCard = ({ id, label, totalStudents, lastAttendance }) => {
-  // ← renamed className → label (className is reserved in React)
   return (
     <div className={styles.classCard}>
       <h4>{label}</h4>
@@ -16,7 +16,11 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance }) => {
             })
           : "No attendance yet"}
       </p>
-      <TakeAttendance classId={id} label={label} />
+
+      <div className="mt-4 flex flex-col gap-2">
+        <TakeAttendance classId={id} label={label} />
+        <StudentIdentityModal classId={id} label={label} />
+      </div>
     </div>
   );
 };

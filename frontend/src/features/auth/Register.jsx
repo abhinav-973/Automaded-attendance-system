@@ -1,27 +1,25 @@
 import { useState } from "react";
-import styles from "../../styles/Login.module.css";
-import axios from "axios";
-import { handleSuccess, handleError } from "../../utils/utils.js";
-import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import styles from "../../styles/Login.module.css";
+import axiosInstance from "../../services/axiosInstance.js";
+import { handleSuccess, handleError } from "../../utils/utils.js";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
   const [registerInfo, setRegisterInfo] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setRegisterInfo({ ...registerInfo, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     const { name, email, password } = registerInfo;
     if (!name || !email || !password) {
@@ -29,14 +27,12 @@ const Register = () => {
     }
 
     try {
-      const url = "http://localhost:3000/auth/register";
-      const response = await axios.post(url, registerInfo);
-
+      const response = await axiosInstance.post("/auth/register", registerInfo);
       const { success, message } = response.data;
 
       if (success) {
         handleSuccess(message);
-        setTimeout(() => navigate("/login"), 1000);
+        setTimeout(() => navigate("/login", { replace: true }), 800);
       }
     } catch (error) {
       handleError(
@@ -48,7 +44,6 @@ const Register = () => {
 
   return (
     <div className={styles.page}>
-      {/* Left Panel */}
       <div className={styles.leftPanel}>
         <div className={styles.brandWrapper}>
           <h1 className={styles.brandName}>AttendanceSys</h1>
@@ -59,7 +54,6 @@ const Register = () => {
         <div className={styles.decoration} />
       </div>
 
-      {/* Right Panel */}
       <div className={styles.rightPanel}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
@@ -75,7 +69,7 @@ const Register = () => {
                 name="name"
                 autoComplete="name"
                 className={styles.input}
-                placeholder="your name"
+                placeholder="Your name"
                 value={registerInfo.name}
                 onChange={handleChange}
                 required
@@ -104,7 +98,7 @@ const Register = () => {
                   name="password"
                   autoComplete="new-password"
                   className={styles.input}
-                  placeholder="••••••••"
+                  placeholder="Create a password"
                   value={registerInfo.password}
                   onChange={handleChange}
                   required
@@ -114,15 +108,13 @@ const Register = () => {
                   className={styles.eyeBtn}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
             </div>
 
             <button type="submit" className={styles.submitBtn}>Register</button>
           </form>
-
-          <ToastContainer />
         </div>
       </div>
     </div>

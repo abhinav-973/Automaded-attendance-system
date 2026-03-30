@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../services/axiosInstance.js";
 import styles from "../styles/AttendanceHistory.module.css";
 
 const AttendanceHistory = () => {
@@ -12,18 +12,14 @@ const AttendanceHistory = () => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/dashboard/recent-attendance",
-          { withCredentials: true }
-        );
-        if (res.data.success) {
-          const data = res.data.attendance;
+        const response = await axiosInstance.get("/dashboard/recent-attendance");
+        if (response.data.success) {
+          const data = response.data.attendance;
           setAttendance(data);
 
-          // Build unique class list from fetched data
           const uniqueClasses = [
             "All",
-            ...new Set(data.map((r) => r.classId?.name).filter(Boolean)),
+            ...new Set(data.map((record) => record.classId?.name).filter(Boolean)),
           ];
           setClasses(uniqueClasses);
         }
@@ -33,23 +29,24 @@ const AttendanceHistory = () => {
         setLoading(false);
       }
     };
+
     fetchAttendance();
   }, []);
 
   const filtered = attendance.filter((row) => {
     const matchClass =
       selectedClass === "All" || row.classId?.name === selectedClass;
-    const dateStr = new Date(row.date).toLocaleDateString("en-IN", {
-      day: "numeric", month: "short", year: "numeric",
+    const dateString = new Date(row.date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
-    const matchDate = dateStr.toLowerCase().includes(searchDate.toLowerCase());
+    const matchDate = dateString.toLowerCase().includes(searchDate.toLowerCase());
     return matchClass && matchDate;
   });
 
   return (
     <div className={styles.page}>
-
-      {/* Header */}
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Attendance History</h1>
@@ -57,14 +54,13 @@ const AttendanceHistory = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <div className={styles.filters}>
         <input
           type="text"
           className={styles.searchInput}
           placeholder="Search by date..."
           value={searchDate}
-          onChange={(e) => setSearchDate(e.target.value)}
+          onChange={(event) => setSearchDate(event.target.value)}
         />
         <div className={styles.classFilters}>
           {classes.map((cls) => (
@@ -79,7 +75,6 @@ const AttendanceHistory = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className={styles.tableWrapper}>
         {loading ? (
           <p>Loading...</p>
@@ -99,15 +94,17 @@ const AttendanceHistory = () => {
               {filtered.length > 0 ? (
                 filtered.map((row) => {
                   const present = row.presentStudents?.length || 0;
-                  const absent  = row.absentStudents?.length  || 0;
-                  const total   = present + absent;
+                  const absent = row.absentStudents?.length || 0;
+                  const total = present + absent;
                   const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
 
                   return (
                     <tr key={row._id} className={styles.tableRow}>
                       <td className={styles.td}>
                         {new Date(row.date).toLocaleDateString("en-IN", {
-                          day: "numeric", month: "short", year: "numeric",
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
                         })}
                       </td>
                       <td className={styles.td}>
@@ -151,7 +148,6 @@ const AttendanceHistory = () => {
           </table>
         )}
       </div>
-
     </div>
   );
 };

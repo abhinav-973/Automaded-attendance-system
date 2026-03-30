@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./components/ui/layout/Sidebar";
 import Navbar from "./components/ui/layout/Navbar";
 
-const MainLayout = ({ setIsAuthenticated }) => {
+const MainLayout = ({ setAuthState }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -12,12 +12,12 @@ const MainLayout = ({ setIsAuthenticated }) => {
         <Sidebar
           isCollapsed={isCollapsed}
           setIsCollapsed={setIsCollapsed}
-          setIsAuthenticated={setIsAuthenticated}
+          setAuthState={setAuthState}
         />
       </div>
 
-      <div className="flex-1 flex flex-col h-full relative">
-        <Navbar setIsAuthenticated={setIsAuthenticated} /> {/* ← pass prop */}
+      <div className="relative flex h-full flex-1 flex-col">
+        <Navbar setAuthState={setAuthState} />
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>

@@ -1,26 +1,25 @@
 import { useState } from "react";
-import styles from "../../styles/Login.module.css";
-import axios from "axios";
-import { handleSuccess, handleError } from "../../utils/utils.js";
-import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import styles from "../../styles/Login.module.css";
+import axiosInstance from "../../services/axiosInstance.js";
+import { handleSuccess, handleError } from "../../utils/utils.js";
+import { setStoredUser } from "../../utils/auth.js";
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = ({ setAuthState }) => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setLoginInfo({ ...loginInfo, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     const { email, password } = loginInfo;
     if (!email || !password) {
@@ -28,18 +27,18 @@ const Login = ({ setIsAuthenticated }) => {
     }
 
     try {
-      const url = "http://localhost:3000/auth/login";
-      const response = await axios.post(url, loginInfo, {
-        withCredentials: true  // needed to receive the httpOnly cookie
-      });
-
+      const response = await axiosInstance.post("/auth/login", loginInfo);
       const { success, message, teacher } = response.data;
 
       if (success) {
-        localStorage.setItem("loggedInUser", JSON.stringify(teacher)); // save user info
-        setIsAuthenticated(true);
+        setStoredUser(teacher);
+        setAuthState({
+          isAuthenticated: true,
+          user: teacher,
+          isReady: true,
+        });
         handleSuccess(message);
-        setTimeout(() => navigate("/dashboard"), 1000);
+        setTimeout(() => navigate("/dashboard", { replace: true }), 800);
       }
     } catch (error) {
       handleError(
@@ -51,7 +50,6 @@ const Login = ({ setIsAuthenticated }) => {
 
   return (
     <div className={styles.page}>
-      {/* Left Panel */}
       <div className={styles.leftPanel}>
         <div className={styles.brandWrapper}>
           <h1 className={styles.brandName}>AttendanceSys</h1>
@@ -62,7 +60,6 @@ const Login = ({ setIsAuthenticated }) => {
         <div className={styles.decoration} />
       </div>
 
-      {/* Right Panel */}
       <div className={styles.rightPanel}>
         <div className={styles.card}>
           <div className={styles.cardHeader}>
@@ -96,7 +93,7 @@ const Login = ({ setIsAuthenticated }) => {
                   name="password"
                   autoComplete="current-password"
                   className={styles.input}
-                  placeholder="••••••••"
+                  placeholder="********"
                   value={loginInfo.password}
                   onChange={handleChange}
                   required
@@ -106,15 +103,13 @@ const Login = ({ setIsAuthenticated }) => {
                   className={styles.eyeBtn}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
             </div>
 
             <button type="submit" className={styles.submitBtn}>Login</button>
           </form>
-
-          <ToastContainer />
         </div>
       </div>
     </div>

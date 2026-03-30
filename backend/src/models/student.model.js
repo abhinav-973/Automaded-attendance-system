@@ -4,6 +4,11 @@ const studentSchema = new mongoose.Schema({
     name: { type: String, required: true },
     roll: { type: String, required: true, unique: true },
     email: { type: String, required: true },
+    modelIdentity: {
+        type: String,
+        default: null,
+        trim: true,
+    },
     classId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Class",
