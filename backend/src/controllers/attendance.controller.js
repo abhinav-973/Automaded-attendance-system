@@ -9,12 +9,17 @@ import { faceServiceUrl } from "../config/env.js";
 
 const takeAttendance = async (req, res) => {
     try {
-        const { classId, image } = req.body;
+        const { classId, image, images } = req.body;
+        const classroomImages = Array.isArray(images)
+            ? images.filter(Boolean)
+            : image
+                ? [image]
+                : [];
 
-        if (!classId || !image) {
+        if (!classId || classroomImages.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "classId and image are required",
+                message: "classId and at least one image are required",
             });
         }
 
@@ -31,24 +36,40 @@ const takeAttendance = async (req, res) => {
             return res.status(400).json({ success: false, message: "No students found in class" });
         }
 
-        const faceResponse = await axios.post(`${faceServiceUrl}/recognize`, {
-            classroomImage: image,
-            students: students.map((student) => ({
-                name: student.name,
-                roll: student.roll,
-                modelIdentity: student.modelIdentity || null,
-                image: student.faceImage || null,
-            })),
-        }, {
-            timeout: 30000,
-        });
+        const studentPayload = students.map((student) => ({
+            name: student.name,
+            roll: student.roll,
+            modelIdentity: student.modelIdentity || null,
+            image: student.faceImage || null,
+        }));
 
-        const recognizedRolls = faceResponse.data.recognized
-            .filter((student) => student.status === "Present")
-            .map((student) => student.roll);
+        const recognitionResponses = await Promise.all(
+            classroomImages.map((classroomImage) =>
+                axios.post(
+                    `${faceServiceUrl}/recognize`,
+                    {
+                        classroomImage,
+                        students: studentPayload,
+                    },
+                    {
+                        timeout: 30000,
+                    }
+                )
+            )
+        );
 
-        const presentStudents = students.filter((student) => recognizedRolls.includes(student.roll));
-        const absentStudents = students.filter((student) => !recognizedRolls.includes(student.roll));
+        const recognizedRolls = new Set();
+
+        for (const recognitionResponse of recognitionResponses) {
+            for (const student of recognitionResponse.data.recognized || []) {
+                if (student.status === "Present") {
+                    recognizedRolls.add(student.roll);
+                }
+            }
+        }
+
+        const presentStudents = students.filter((student) => recognizedRolls.has(student.roll));
+        const absentStudents = students.filter((student) => !recognizedRolls.has(student.roll));
 
         await Attendance.create({
             classId,
@@ -60,7 +81,9 @@ const takeAttendance = async (req, res) => {
 
         await Class.findByIdAndUpdate(classId, { lastAttendance: new Date() });
 
-        const filePath = path.join("outputs", `attendance_${Date.now()}.csv`);
+        const reportDate = new Date().toISOString().slice(0, 10);
+        const downloadName = `attendance_${classDoc.name}_${reportDate}.csv`;
+        const filePath = path.join("outputs", `attendance_${classDoc.name}_${Date.now()}.csv`);
         if (!fs.existsSync("outputs")) fs.mkdirSync("outputs");
 
         const csvWriter = createObjectCsvWriter({
@@ -90,7 +113,7 @@ const takeAttendance = async (req, res) => {
 
         await csvWriter.writeRecords(records);
 
-        res.download(filePath, `attendance_${new Date().toLocaleDateString()}.csv`, () => {
+        res.download(filePath, downloadName, () => {
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }

@@ -31,7 +31,7 @@ const Dashboard = () => {
     <div className={styles.container}>
       <div className={styles.welcome}>
         <h2>Welcome back, {loggedInUser?.name}</h2>
-        <p>Select a class, map students to the model if needed, then upload a classroom image to run attendance.</p>
+        <p>Take attendance from each class card. Review model mappings only when a class still needs setup.</p>
       </div>
 
       <div className={styles.section}>
@@ -49,6 +49,9 @@ const Dashboard = () => {
                 label={cls.name}
                 totalStudents={cls.totalStudents}
                 lastAttendance={cls.lastAttendance}
+                mappedStudents={cls.mappedStudents}
+                unmappedStudents={cls.unmappedStudents}
+                needsModelMapping={cls.needsModelMapping}
               />
             ))}
           </div>

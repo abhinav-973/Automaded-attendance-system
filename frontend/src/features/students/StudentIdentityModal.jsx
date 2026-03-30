@@ -7,7 +7,12 @@ const normalizeIdentity = (value) =>
     .toUpperCase()
     .replace(/[^A-Z0-9]+/g, "");
 
-const StudentIdentityModal = ({ classId, label }) => {
+const StudentIdentityModal = ({
+  classId,
+  label,
+  triggerLabel = "Map Model Names",
+  triggerClassName = "rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50",
+}) => {
   const [open, setOpen] = useState(false);
   const [students, setStudents] = useState([]);
   const [identities, setIdentities] = useState([]);
@@ -100,9 +105,9 @@ const StudentIdentityModal = ({ classId, label }) => {
       <button
         type="button"
         onClick={openModal}
-        className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+        className={triggerClassName}
       >
-        Map Model Names
+        {triggerLabel}
       </button>
 
       {open && (

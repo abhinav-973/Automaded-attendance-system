@@ -9,6 +9,14 @@ const Sidebar = ({ setAuthState, isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const currentUser = getStoredUser();
   const isAdmin = currentUser?.role === "admin";
+  const navItems = [
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/history", label: "Attendance History" },
+  ];
+
+  if (isAdmin) {
+    navItems.push({ to: "/admin", label: "Admin Upload" });
+  }
 
   const handleLogout = async () => {
     try {
@@ -41,37 +49,20 @@ const Sidebar = ({ setAuthState, isCollapsed, setIsCollapsed }) => {
         </div>
 
         <nav className={styles.nav}>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => isActive ? styles.activeLink : styles.link}
-          >
-            <span>Home</span>
-            {!isCollapsed && "Dashboard"}
-          </NavLink>
-
-          <NavLink
-            to="/history"
-            className={({ isActive }) => isActive ? styles.activeLink : styles.link}
-          >
-            <span>Log</span>
-            {!isCollapsed && "Attendance History"}
-          </NavLink>
-
-          {isAdmin && (
+          {navItems.map((item) => (
             <NavLink
-              to="/admin"
+              key={item.to}
+              to={item.to}
               className={({ isActive }) => isActive ? styles.activeLink : styles.link}
             >
-              <span>CSV</span>
-              {!isCollapsed && "Admin Upload"}
+              {!isCollapsed && <span className={styles.linkText}>{item.label}</span>}
             </NavLink>
-          )}
+          ))}
         </nav>
 
         <div className={styles.footer}>
           <button className={styles.logoutBtn} onClick={() => setShowConfirm(true)}>
-            <span>Out</span>
-            {!isCollapsed && "Logout"}
+            {!isCollapsed && <span className={styles.linkText}>Logout</span>}
           </button>
         </div>
       </aside>

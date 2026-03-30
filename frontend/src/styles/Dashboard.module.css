@@ -56,6 +56,30 @@
   @apply mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200;
 }
 
+.setupRow {
+  @apply mt-1 flex items-center justify-between gap-3;
+}
+
+.setupBadge {
+  @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+}
+
+.setupBadgeReady {
+  @apply bg-emerald-100 text-emerald-700;
+}
+
+.setupBadgeWarning {
+  @apply bg-amber-100 text-amber-800;
+}
+
+.setupBadgeMuted {
+  @apply bg-slate-100 text-slate-600;
+}
+
+.secondaryAction {
+  @apply border-0 bg-transparent p-0 text-sm font-medium text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline;
+}
+
 /* Table */
 .tableWrapper {
   @apply bg-white rounded-xl shadow-sm overflow-hidden;
@@ -92,6 +116,18 @@
 
 .modalButtons {
   @apply flex gap-3 mt-2;
+}
+
+.modalStatusCard {
+  @apply mt-1 rounded-lg bg-slate-50 p-3 border border-slate-200;
+}
+
+.modalStatusTitle {
+  @apply text-sm font-semibold text-slate-700 m-0;
+}
+
+.modalStatusText {
+  @apply text-sm text-slate-500 mt-1 mb-0;
 }
 
 .confirmBtn {
