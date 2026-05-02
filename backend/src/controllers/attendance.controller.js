@@ -5,7 +5,7 @@ import Class from "../models/class.model.js";
 import { createObjectCsvWriter } from "csv-writer";
 import path from "path";
 import fs from "fs";
-import { faceServiceUrl } from "../config/env.js";
+import { faceServiceTimeoutMs, faceServiceUrl } from "../config/env.js";
 
 const takeAttendance = async (req, res) => {
     try {
@@ -52,7 +52,7 @@ const takeAttendance = async (req, res) => {
                         students: studentPayload,
                     },
                     {
-                        timeout: 30000,
+                        timeout: faceServiceTimeoutMs,
                     }
                 )
             )
@@ -120,10 +120,18 @@ const takeAttendance = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
+        const isFaceServiceTimeout =
+            axios.isAxiosError(error) && error.code === "ECONNABORTED";
         const detail = error.response?.data?.detail;
-        res.status(500).json({
+        res.status(isFaceServiceTimeout ? 504 : 500).json({
             success: false,
-            message: detail || "Internal Server Error",
+            message:
+                detail ||
+                (isFaceServiceTimeout
+                    ? `Face recognition took longer than ${Math.round(
+                        faceServiceTimeoutMs / 1000
+                    )} seconds. Try again or increase FACE_SERVICE_TIMEOUT_MS.`
+                    : "Internal Server Error"),
         });
     }
 };

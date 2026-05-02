@@ -168,3 +168,7 @@ def recognize_present_students(classroom_image, students):
 def get_known_identities():
     pipeline = _get_pipeline()
     return sorted(pipeline.classifier._label_to_name.values(), key=str.casefold)
+
+
+def warmup_model():
+    _get_pipeline()

@@ -1,7 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../services/axiosInstance.js";
 import { handleError, handleSuccess } from "../../utils/utils.js";
 import styles from "../../styles/Dashboard.module.css";
+
+const attendanceRequestTimeoutMs = Number.parseInt(
+  import.meta.env.VITE_ATTENDANCE_TIMEOUT_MS || "180000",
+  10
+);
+
+const initialProgressState = {
+  percent: 0,
+  title: "",
+  detail: "",
+};
 
 const extractBlobMessage = async (blob) => {
   if (!(blob instanceof Blob)) {
@@ -24,6 +35,9 @@ const TakeAttendance = ({ classId, label }) => {
   const [reportFileName, setReportFileName] = useState("");
   const [reportImageCount, setReportImageCount] = useState(0);
   const [generatedAt, setGeneratedAt] = useState("");
+  const [progress, setProgress] = useState(initialProgressState);
+  const progressIntervalRef = useRef(null);
+  const progressTimeoutRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -32,6 +46,104 @@ const TakeAttendance = ({ classId, label }) => {
       }
     };
   }, [reportUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+      }
+
+      if (progressTimeoutRef.current) {
+        window.clearTimeout(progressTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const clearProgressTimers = () => {
+    if (progressIntervalRef.current) {
+      window.clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+
+    if (progressTimeoutRef.current) {
+      window.clearTimeout(progressTimeoutRef.current);
+      progressTimeoutRef.current = null;
+    }
+  };
+
+  const resetProgress = () => {
+    clearProgressTimers();
+    setProgress(initialProgressState);
+  };
+
+  const setProgressState = ({ percent, title, detail }) => {
+    setProgress((current) => ({
+      percent: Math.max(current.percent, Math.min(100, Math.round(percent))),
+      title: title || current.title,
+      detail: detail || current.detail,
+    }));
+  };
+
+  const startProcessingProgress = (imageCount) => {
+    clearProgressTimers();
+
+    setProgressState({
+      percent: 58,
+      title: "Recognizing faces",
+      detail: `The model is matching faces across ${imageCount} classroom image${
+        imageCount === 1 ? "" : "s"
+      }.`,
+    });
+
+    progressIntervalRef.current = window.setInterval(() => {
+      setProgress((current) => {
+        if (current.percent >= 88) {
+          return current;
+        }
+
+        const remaining = 88 - current.percent;
+        return {
+          ...current,
+          percent: Math.min(
+            88,
+            current.percent + Math.max(1, Math.round(remaining * 0.2))
+          ),
+        };
+      });
+    }, 450);
+
+    progressTimeoutRef.current = window.setTimeout(() => {
+      if (progressIntervalRef.current) {
+        window.clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+
+      setProgress((current) => ({
+        ...current,
+        percent: Math.max(current.percent, 90),
+        title: "Generating report",
+        detail:
+          "Attendance is being merged, absences are being marked, and the CSV report is being prepared.",
+      }));
+
+      progressIntervalRef.current = window.setInterval(() => {
+        setProgress((current) => {
+          if (current.percent >= 97) {
+            return current;
+          }
+
+          const remaining = 97 - current.percent;
+          return {
+            ...current,
+            percent: Math.min(
+              97,
+              current.percent + Math.max(1, Math.round(remaining * 0.25))
+            ),
+          };
+        });
+      }, 500);
+    }, 2400);
+  };
 
   const closeModal = () => {
     setShowOptions(false);
@@ -45,6 +157,7 @@ const TakeAttendance = ({ classId, label }) => {
     setReportFileName("");
     setReportImageCount(0);
     setGeneratedAt("");
+    resetProgress();
   };
 
   const triggerDownload = (downloadUrl, fileName) => {
@@ -73,22 +186,73 @@ const TakeAttendance = ({ classId, label }) => {
       return;
     }
 
+    clearGeneratedReport();
     setLoading(true);
     setReportImageCount(selectedFiles.length);
+    setProgress({
+      percent: 8,
+      title: "Preparing images",
+      detail: "Getting your classroom images ready before upload starts.",
+    });
 
     try {
-      clearGeneratedReport();
       setReportImageCount(selectedFiles.length);
 
       const base64Images = await Promise.all(
         selectedFiles.map((file) => fileToBase64(file))
       );
 
+      setProgressState({
+        percent: 16,
+        title: "Uploading images",
+        detail: `Uploading ${selectedFiles.length} classroom image${
+          selectedFiles.length === 1 ? "" : "s"
+        } to the attendance service.`,
+      });
+
+      let processingStarted = false;
+
       const response = await axiosInstance.post(
         "/attendance/take",
         { classId, images: base64Images },
-        { responseType: "blob" }
+        {
+          responseType: "blob",
+          timeout: Number.isFinite(attendanceRequestTimeoutMs)
+            ? attendanceRequestTimeoutMs
+            : 180000,
+          onUploadProgress: (event) => {
+            if (!event.total) {
+              return;
+            }
+
+            const uploadRatio = event.total > 0 ? event.loaded / event.total : 0;
+
+            setProgressState({
+              percent: 16 + uploadRatio * 40,
+              title: "Uploading images",
+              detail: `Uploading ${selectedFiles.length} classroom image${
+                selectedFiles.length === 1 ? "" : "s"
+              } to the attendance service.`,
+            });
+
+            if (uploadRatio >= 1 && !processingStarted) {
+              processingStarted = true;
+              startProcessingProgress(selectedFiles.length);
+            }
+          },
+        }
       );
+
+      if (!processingStarted) {
+        startProcessingProgress(selectedFiles.length);
+      }
+
+      clearProgressTimers();
+      setProgress({
+        percent: 100,
+        title: "Report ready",
+        detail: "Attendance has been processed and the CSV report is ready to download.",
+      });
 
       const generatedFileName = `attendance_${label}.csv`;
       const generatedReportUrl = window.URL.createObjectURL(new Blob([response.data]));
@@ -110,6 +274,7 @@ const TakeAttendance = ({ classId, label }) => {
         "Failed to take attendance. Please try again."
       );
     } finally {
+      clearProgressTimers();
       setLoading(false);
     }
   };
@@ -139,7 +304,7 @@ const TakeAttendance = ({ classId, label }) => {
         onClick={() => setShowOptions(true)}
         disabled={loading}
       >
-        {loading ? "Processing..." : "Take Attendance"}
+        {loading ? progress.title || "Processing..." : "Take Attendance"}
       </button>
 
       {showOptions && (
@@ -149,13 +314,31 @@ const TakeAttendance = ({ classId, label }) => {
               <>
                 <h3 className={styles.modalTitle}>Generating Attendance Report</h3>
                 <p className={styles.modalText}>
-                  Processing classroom image{reportImageCount === 1 ? "" : "s"} for {label}.
-                  Repeated students across multiple images will be counted only once.
+                  Working on {reportImageCount} classroom image
+                  {reportImageCount === 1 ? "" : "s"} for {label}. Repeated students
+                  across multiple images will still be counted only once.
                 </p>
                 <div className={styles.modalStatusCard}>
-                  <p className={styles.modalStatusTitle}>Please wait</p>
+                  <div className={styles.progressHeader}>
+                    <p className={styles.modalStatusTitle}>{progress.title || "Processing"}</p>
+                    <span className={styles.progressValue}>{progress.percent}%</span>
+                  </div>
+                  <div
+                    className={styles.progressTrack}
+                    role="progressbar"
+                    aria-valuenow={progress.percent}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-label="Attendance generation progress"
+                  >
+                    <div
+                      className={styles.progressFill}
+                      style={{ width: `${progress.percent}%` }}
+                    />
+                  </div>
                   <p className={styles.modalStatusText}>
-                    We are merging attendance from all selected images and preparing the CSV report.
+                    {progress.detail ||
+                      "Uploading images, recognizing faces, and preparing the report."}
                   </p>
                 </div>
               </>

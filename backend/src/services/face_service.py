@@ -1,5 +1,6 @@
 import base64
 import importlib
+import logging
 import os
 
 import cv2
@@ -9,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI()
+logger = logging.getLogger(__name__)
 
 
 def _parse_allowed_origins():
@@ -22,6 +24,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def warmup_face_pipeline():
+    try:
+        handler = load_optional_model_function("warmup_model")
+        handler()
+        logger.info("Face recognition pipeline warmed up successfully.")
+    except Exception:
+        logger.exception("Face recognition pipeline warmup failed.")
+        raise
 
 
 class Student(BaseModel):

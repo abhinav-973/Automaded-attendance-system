@@ -4,6 +4,11 @@ const splitCsv = (value = "") =>
         .map((entry) => entry.trim())
         .filter(Boolean);
 
+const parsePositiveInteger = (value, fallback) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
+
 const normalizeSameSite = (value) => {
     const normalized = (value || "").toLowerCase();
     if (["lax", "strict", "none"].includes(normalized)) {
@@ -24,6 +29,10 @@ const cookieSecure = process.env.COOKIE_SECURE
     ? process.env.COOKIE_SECURE === "true"
     : isProduction;
 const faceServiceUrl = process.env.FACE_SERVICE_URL || "http://localhost:5001";
+const faceServiceTimeoutMs = parsePositiveInteger(
+    process.env.FACE_SERVICE_TIMEOUT_MS,
+    180000
+);
 
 const corsOriginHandler = (origin, callback) => {
     if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
@@ -54,5 +63,6 @@ export {
     cookieSameSite,
     corsOriginHandler,
     faceServiceUrl,
+    faceServiceTimeoutMs,
     isProduction,
 };
