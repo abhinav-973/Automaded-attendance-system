@@ -119,20 +119,37 @@ const takeAttendance = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error);
+        console.error("Failed to take attendance:", error);
         const isFaceServiceTimeout =
             axios.isAxiosError(error) && error.code === "ECONNABORTED";
+        const isFaceServiceUnavailable =
+            axios.isAxiosError(error) &&
+            !error.response &&
+            ["ECONNREFUSED", "ENOTFOUND", "ECONNRESET", "ETIMEDOUT"].includes(error.code);
         const detail = error.response?.data?.detail;
-        res.status(isFaceServiceTimeout ? 504 : 500).json({
-            success: false,
-            message:
-                detail ||
-                (isFaceServiceTimeout
-                    ? `Face recognition took longer than ${Math.round(
-                        faceServiceTimeoutMs / 1000
-                    )} seconds. Try again or increase FACE_SERVICE_TIMEOUT_MS.`
-                    : "Internal Server Error"),
-        });
+
+        if (detail) {
+            return res.status(500).json({ success: false, message: detail });
+        }
+
+        if (isFaceServiceTimeout) {
+            return res.status(504).json({
+                success: false,
+                message: `Face recognition took longer than ${Math.round(
+                    faceServiceTimeoutMs / 1000
+                )} seconds. Try again or increase FACE_SERVICE_TIMEOUT_MS.`,
+            });
+        }
+
+        if (isFaceServiceUnavailable) {
+            return res.status(502).json({
+                success: false,
+                message:
+                    "Face recognition service is not reachable. Start the face service or set FACE_SERVICE_URL in Render.",
+            });
+        }
+
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
