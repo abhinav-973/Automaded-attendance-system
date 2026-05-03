@@ -84,13 +84,11 @@ const loginTeacher = async (req, res) => {
 
 const getMe = async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
+        if (!req.user?.id) {
             return res.status(401).json({ success: false, message: "Unauthorized" });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const teacher = await AuthSchema.findById(decoded.id);
+        const teacher = await AuthSchema.findById(req.user.id);
         if (!teacher) {
             return res.status(404).json({ success: false, message: "Teacher not found" });
         }

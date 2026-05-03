@@ -7,6 +7,7 @@ import Dashboard from "../features/dashboard/Dashboard";
 import AttendanceHistory from "../pages/AttendanceHistory";
 import RefreshHandler from "../components/ui/RefreshHandler";
 import AdminUpload from "../pages/AdminUpload";
+import { getStoredUser } from "../utils/auth";
 
 const LoadingScreen = () => (
   <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-600">
@@ -43,10 +44,14 @@ const PublicOnlyRoute = ({ authState, children }) => {
 };
 
 function AppRoutes() {
-  const [authState, setAuthState] = useState({
-    isAuthenticated: false,
-    user: null,
-    isReady: false,
+  const [authState, setAuthState] = useState(() => {
+    const storedUser = getStoredUser();
+
+    return {
+      isAuthenticated: Boolean(storedUser),
+      user: storedUser,
+      isReady: true,
+    };
   });
 
   return (
