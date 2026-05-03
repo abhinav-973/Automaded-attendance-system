@@ -1,158 +1,163 @@
 @reference '../index.css';
 
+.dashboardShell {
+  @apply relative min-h-dvh bg-[#f0f2f5] overflow-hidden font-sans;
+}
+
+/* Bokeh/Mesh Background Effects */
+.blob1 {
+  @apply absolute -top-20 -left-20 w-[500px] h-[500px] bg-blue-200/40 rounded-full blur-[120px] -z-10;
+}
+.blob2 {
+  @apply absolute top-1/2 -right-20 w-[400px] h-[400px] bg-purple-200/30 rounded-full blur-[100px] -z-10;
+}
+
 .container {
-  @apply p-8 bg-gray-100 min-h-screen;
+  @apply relative z-10 max-w-7xl mx-auto px-4 py-8 md:px-8;
 }
 
-/* Welcome */
-.welcome {
-  @apply mb-8;
+/* Glass Header */
+.glassHeader {
+  @apply flex flex-col md:flex-row justify-between items-center p-8 mb-10 rounded-[2.5rem] bg-slate-900 text-white shadow-2xl;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
-.welcome h2 {
-  @apply text-2xl font-semibold text-gray-800;
+.badge {
+  @apply inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-4 border border-blue-500/30;
 }
 
-.welcome p {
-  @apply text-gray-500 mt-1;
+.greeting { @apply text-4xl font-black tracking-tight mb-2; }
+.userName { @apply text-blue-400; }
+.heroSubtext { @apply text-slate-400 text-sm max-w-md leading-relaxed opacity-80; }
+
+.headerActions { @apply flex items-center gap-4 mt-6 md:mt-0; }
+.iconBtn { @apply p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all; }
+
+.userProfile { @apply flex items-center gap-3 bg-white/5 p-1.5 pr-4 rounded-2xl border border-white/10; }
+.avatar { @apply w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center font-bold text-white; }
+.profileName { @apply text-sm font-bold; }
+
+/* Section Styling */
+.section { @apply mb-12; }
+.sectionHeader { @apply flex justify-between items-center mb-6; }
+.sectionTitle { @apply text-xl font-black text-slate-800 tracking-tight; }
+.countChip { @apply px-3 py-1 bg-white rounded-lg text-xs font-bold text-slate-500 shadow-sm border border-slate-100; }
+
+/* Glass Class Card */
+.classGrid { @apply grid grid-cols-1 md:grid-cols-2 gap-8; }
+
+.glassCard {
+  @apply bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white shadow-xl shadow-slate-200/50;
 }
 
-/* Stats */
-.statsGrid {
-  @apply grid grid-cols-3 gap-6 mb-10;
+.cardHeader { @apply flex justify-between items-start mb-8; }
+.cardTitle { @apply text-2xl font-black text-slate-900; }
+.cardSubtitle { @apply text-xs font-bold text-slate-400 uppercase tracking-widest mt-1; }
+
+.statusBadge { @apply flex items-center gap-2 px-3 py-1.5 bg-slate-100/50 rounded-xl text-[10px] font-black text-slate-500; }
+.pulseDot { @apply w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse; }
+
+/* Gauge Styles */
+.cardBody { @apply flex flex-col sm:flex-row items-center gap-8 mb-8; }
+.gaugeWrapper { @apply relative w-32 h-32 flex-shrink-0; }
+.gaugeSvg { @apply w-full h-full -rotate-90; }
+.gaugeBg { @apply fill-none stroke-slate-100 stroke-[6]; }
+.gaugeFill { 
+  @apply fill-none stroke-blue-500 stroke-[6]; 
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(59,130,246,0.4));
+}
+.gaugeText { @apply absolute inset-0 flex flex-col items-center justify-center; }
+.gaugePercent { @apply text-xl font-black text-slate-800; }
+.gaugeLabel { @apply text-[8px] font-bold text-slate-400 uppercase tracking-tighter; }
+
+.cardInfo { @apply flex-1 text-center sm:text-left; }
+.infoItem strong { @apply text-sm font-black text-slate-800 block mb-1; }
+.infoItem p { @apply text-xs text-slate-500 leading-relaxed; }
+.alertBox { @apply mt-4 inline-block px-3 py-1 bg-orange-100 text-orange-600 text-[10px] font-black rounded-lg uppercase; }
+
+/* Footer Actions */
+.cardFooter { @apply flex flex-col gap-3; }
+.ghostBtn { @apply w-full py-3 text-xs font-black text-blue-600 hover:bg-blue-50 rounded-2xl transition-all uppercase tracking-widest; }
+
+/* Shared Loader Styles */
+.skeletonCard { @apply h-64 bg-white/50 animate-pulse rounded-[2.5rem] border border-white; }
+/* --- Recent Attendance Glass Layout --- */
+
+.historyList {
+  @apply flex flex-col gap-4;
 }
 
-.statsCard {
-  @apply bg-white p-6 rounded-xl shadow-sm;
+.historyCard {
+  @apply flex flex-col md:flex-row items-start md:items-center justify-between p-5 
+         bg-white/70 backdrop-blur-xl rounded-[1.5rem] border border-white 
+         shadow-lg shadow-slate-200/40 transition-all hover:bg-white/90 hover:shadow-xl;
 }
 
-.statsTitle {
-  @apply text-sm text-gray-500;
+/* Date Section */
+.historyDate {
+  @apply flex items-center gap-4 min-w-[120px] mb-4 md:mb-0;
+}
+.dateIconWrapper {
+  @apply flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 border border-blue-100;
+}
+.dateText {
+  @apply flex flex-col;
+}
+.day {
+  @apply text-xl font-black text-slate-900 leading-none;
+}
+.month {
+  @apply text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5;
 }
 
-.statsValue {
-  @apply text-xl font-bold text-gray-800 mt-2;
+/* Class Info Section */
+.historyClass {
+  @apply flex flex-col flex-1 min-w-[150px] mb-4 md:mb-0 md:px-6 md:border-l border-slate-100;
+}
+.historyClassName {
+  @apply text-base font-black text-slate-800;
+}
+.historyTotal {
+  @apply flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-1;
 }
 
-/* Sections */
-.section {
-  @apply mb-10;
+/* Stats Pills Section */
+.historyStats {
+  @apply flex flex-wrap gap-2 w-full md:w-auto md:mr-8;
+}
+.statPillPresent {
+  @apply flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[11px] font-black uppercase tracking-tight border border-emerald-100/50;
+}
+.statPillAbsent {
+  @apply flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-500 rounded-lg text-[11px] font-black uppercase tracking-tight border border-rose-100/50;
 }
 
-.sectionTitle {
-  @apply text-lg font-semibold text-gray-700 mb-4;
+/* Mini Ratio Gauge Section */
+.historyRatio {
+  @apply absolute top-5 right-5 md:relative md:top-auto md:right-auto flex items-center justify-center;
+}
+.miniGaugeWrapper {
+  @apply relative w-12 h-12 flex items-center justify-center;
+}
+.miniGaugeSvg {
+  @apply absolute inset-0 w-full h-full -rotate-90 drop-shadow-sm;
+}
+.miniGaugeBg {
+  @apply fill-none stroke-slate-100 stroke-[4];
+}
+.miniGaugeFill {
+  @apply fill-none stroke-blue-500 stroke-[4];
+  stroke-linecap: round;
+}
+.miniGaugeText {
+  @apply text-[10px] font-black text-slate-700 z-10;
 }
 
-/* Class Cards */
-.classGrid {
-  @apply grid grid-cols-3 gap-6;
+/* States */
+.historySkeleton {
+  @apply h-24 w-full bg-white/40 backdrop-blur-md rounded-[1.5rem] border border-white/50 animate-pulse;
 }
-
-.classCard {
-  @apply bg-white p-6 rounded-xl shadow-sm flex flex-col gap-2;
-}
-
-.primaryButton {
-  @apply mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200;
-}
-
-.setupRow {
-  @apply mt-1 flex items-center justify-between gap-3;
-}
-
-.setupBadge {
-  @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
-}
-
-.setupBadgeReady {
-  @apply bg-emerald-100 text-emerald-700;
-}
-
-.setupBadgeWarning {
-  @apply bg-amber-100 text-amber-800;
-}
-
-.setupBadgeMuted {
-  @apply bg-slate-100 text-slate-600;
-}
-
-.secondaryAction {
-  @apply border-0 bg-transparent p-0 text-sm font-medium text-slate-600 underline-offset-4 transition hover:text-slate-900 hover:underline;
-}
-
-/* Table */
-.tableWrapper {
-  @apply bg-white rounded-xl shadow-sm overflow-hidden;
-}
-
-.table {
-  @apply w-full text-left border-collapse;
-}
-
-.table th {
-  @apply px-6 py-3 bg-gray-50 text-sm font-semibold text-gray-600;
-}
-
-.table td {
-  @apply px-6 py-4 text-gray-700 border-t;
-}
-/* ── Modal Overlay ───────────────────────────────────────── */
-.overlay {
-  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
-}
-
-/* ── Modal Box ───────────────────────────────────────────── */
-.modal {
-  @apply bg-white rounded-xl p-6 w-80 flex flex-col gap-3 shadow-2xl;
-}
-
-.modalTitle {
-  @apply text-lg font-semibold text-gray-800 m-0;
-}
-
-.modalText {
-  @apply text-sm text-gray-500 m-0;
-}
-
-.modalButtons {
-  @apply flex gap-3 mt-2;
-}
-
-.modalStatusCard {
-  @apply mt-1 rounded-lg bg-slate-50 p-3 border border-slate-200;
-}
-
-.modalStatusTitle {
-  @apply text-sm font-semibold text-slate-700 m-0;
-}
-
-.modalStatusText {
-  @apply text-sm text-slate-500 mt-1 mb-0;
-}
-
-.progressHeader {
-  @apply flex items-center justify-between gap-3;
-}
-
-.progressValue {
-  @apply text-xs font-semibold text-blue-700;
-}
-
-.progressTrack {
-  @apply mt-3 h-2.5 w-full overflow-hidden rounded-full bg-slate-200;
-}
-
-.progressFill {
-  @apply h-full rounded-full bg-gradient-to-r from-blue-500 via-sky-500 to-emerald-400;
-  transition: width 0.4s ease;
-}
-
-.confirmBtn {
-  @apply flex-1 py-2 bg-blue-600 text-white font-semibold rounded-lg 
-         cursor-pointer border-none transition-colors hover:bg-blue-700;
-}
-
-.cancelBtn {
-  @apply w-full py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg 
-         cursor-pointer border-none transition-colors hover:bg-gray-200 mt-1;
+.emptyGlassState {
+  @apply flex flex-col items-center justify-center py-12 px-6 bg-white/40 backdrop-blur-md rounded-[2rem] border border-white text-sm font-bold text-slate-400 text-center;
 }

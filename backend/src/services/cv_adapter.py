@@ -4,15 +4,25 @@ import re
 from pathlib import Path
 from threading import Lock
 
-from src.services.friend_model.aligner import FaceAligner
-from src.services.friend_model.classifier import EnsembleClassifier
-from src.services.friend_model.detector import YOLOFaceDetector
-from src.services.friend_model.embedder import FaceEmbedder
-
 logger = logging.getLogger(__name__)
 
 _PIPELINE = None
 _PIPELINE_LOCK = Lock()
+
+
+try:
+    from .friend_model.aligner import FaceAligner
+    from .friend_model.classifier import EnsembleClassifier
+    from .friend_model.detector import YOLOFaceDetector
+    from .friend_model.embedder import FaceEmbedder
+except ImportError:
+    if __package__:
+        raise
+
+    from friend_model.aligner import FaceAligner
+    from friend_model.classifier import EnsembleClassifier
+    from friend_model.detector import YOLOFaceDetector
+    from friend_model.embedder import FaceEmbedder
 
 
 def _backend_root() -> Path:

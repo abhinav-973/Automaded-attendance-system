@@ -1,77 +1,118 @@
-@reference '../index.css'; 
+@reference '../index.css';
 
+/* --- Desktop Sidebar --- */
 .sidebar {
-  @apply w-64 h-screen bg-white shadow-lg flex flex-col justify-between px-6 py-8 transition-all duration-300;
+  @apply hidden md:flex flex-col fixed top-0 left-0 h-dvh bg-white/70 backdrop-blur-2xl border-r border-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-40 transition-all duration-300 ease-in-out;
 }
 
-.collapsed {
-  @apply w-16 px-2;
+.expanded { @apply w-72; }
+.collapsed { @apply w-20; }
+
+.header {
+  @apply p-6 border-b border-slate-100/50 mb-4;
 }
 
-.logo {
-  @apply text-2xl font-bold text-blue-600 mb-8 flex items-center justify-between;
+.logoWrapper {
+  @apply flex items-center h-8;
+}
+
+.logoText {
+  @apply text-xl font-black text-slate-900 tracking-tight whitespace-nowrap overflow-hidden;
 }
 
 .toggleBtn {
-  @apply ml-auto p-1 rounded hover:bg-gray-100 text-gray-500 cursor-pointer text-base;
+  @apply flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-colors border border-slate-200/50 cursor-pointer flex-shrink-0;
 }
 
+/* Nav Links */
 .nav {
-  @apply flex flex-col gap-4;
+  @apply flex-1 flex flex-col gap-2 px-4 overflow-y-auto;
 }
 
 .link {
-  @apply px-4 py-2 rounded-lg text-gray-700 font-medium transition duration-200 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-3;
+  @apply flex items-center gap-4 px-3 py-3.5 rounded-2xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent font-medium;
 }
 
 .activeLink {
-  @apply px-4 py-2 rounded-lg bg-blue-100 text-blue-600 font-semibold flex items-center gap-3;
+  @apply flex items-center gap-4 px-3 py-3.5 rounded-2xl bg-blue-500 text-white shadow-lg shadow-blue-500/20 border border-blue-400 font-bold;
+}
+
+.linkIcon {
+  @apply flex items-center justify-center w-6 h-6 flex-shrink-0;
 }
 
 .linkText {
-  @apply truncate;
+  @apply text-sm whitespace-nowrap;
 }
 
+/* Footer */
 .footer {
-  @apply mt-10;
+  @apply p-4 border-t border-slate-100/50 mt-auto;
 }
 
 .logoutBtn {
-  @apply w-full px-4 py-2 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition duration-200 flex items-center gap-3;
+  @apply w-full flex items-center gap-4 px-3 py-3.5 rounded-2xl text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-all border border-transparent font-bold cursor-pointer;
 }
 
+/* --- Mobile Floating Glass Dock --- */
+.mobileNav {
+  @apply md:hidden fixed bottom-6 inset-x-4 z-40 pointer-events-none;
+}
+
+.mobileNavContainer {
+  @apply flex items-center justify-around w-full max-w-sm mx-auto bg-white/80 backdrop-blur-2xl border border-white shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-[2rem] p-2 pointer-events-auto;
+}
+
+.mobileNavItem {
+  @apply flex flex-col items-center justify-center gap-1 w-16 h-14 rounded-2xl text-slate-400 transition-all;
+}
+
+.mobileNavItemActive {
+  @apply text-blue-600 bg-blue-50;
+}
+
+.mobileIconWrapper {
+  @apply flex items-center justify-center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mobileNavItemActive .mobileIconWrapper {
+  @apply transform -translate-y-1 scale-110;
+}
+
+.mobileNavText {
+  @apply text-[9px] font-black uppercase tracking-wider;
+}
+
+/* --- Logout Modal --- */
 .overlay {
-  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300;
 }
 
 .modal {
-  @apply bg-white rounded-xl p-6 w-80 flex flex-col gap-3 shadow-2xl;
+  @apply flex flex-col items-center text-center bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl border border-white animate-in zoom-in-95 duration-300 ease-out;
+}
+
+.modalIconBox {
+  @apply flex items-center justify-center w-16 h-16 rounded-full bg-rose-50 border border-rose-100 mb-4;
 }
 
 .modalTitle {
-  @apply text-lg font-semibold text-gray-800 m-0;
+  @apply text-2xl font-black text-slate-900 mb-2 tracking-tight;
 }
 
 .modalText {
-  @apply text-sm text-gray-500 m-0;
+  @apply text-sm text-slate-500 leading-relaxed mb-8;
 }
 
 .modalButtons {
-  @apply flex gap-3 mt-2;
+  @apply flex flex-col w-full gap-3;
 }
 
 .confirmBtn {
-  @apply flex-1 py-2 bg-red-500 text-white font-semibold rounded-lg cursor-pointer border-none transition-colors;
-}
-
-.confirmBtn:hover {
-  @apply bg-red-600;
+  @apply w-full h-[52px] bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl active:scale-[0.98] transition-all shadow-lg shadow-rose-500/20 cursor-pointer;
 }
 
 .cancelBtn {
-  @apply flex-1 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg cursor-pointer border-none transition-colors;
-}
-
-.cancelBtn:hover {
-  @apply bg-gray-200;
+  @apply w-full h-[52px] bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-2xl transition-colors cursor-pointer;
 }
