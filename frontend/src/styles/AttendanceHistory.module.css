@@ -1,115 +1,230 @@
 @reference '../index.css';
 
-.page {
-  @apply p-6 md:p-8 flex flex-col gap-6;
+/* --- Core Layout & Background --- */
+.pageShell {
+  @apply relative min-h-dvh bg-[#f0f2f5] overflow-hidden font-sans pb-24;
 }
 
-/* ── Header ── */
-.header {
-  @apply flex items-center justify-between;
+.blob1 {
+  @apply absolute top-0 -left-20 w-[600px] h-[600px] bg-blue-200/40 rounded-full blur-[120px] -z-10 pointer-events-none;
+}
+.blob2 {
+  @apply absolute top-[40%] -right-20 w-[500px] h-[500px] bg-purple-200/30 rounded-full blur-[120px] -z-10 pointer-events-none;
+}
+
+.container {
+  @apply relative z-10 max-w-7xl mx-auto px-4 py-8 md:px-8 flex flex-col gap-8;
+}
+
+/* --- Dark Glass Header --- */
+.glassHeader {
+  @apply rounded-[2.5rem] bg-slate-900 text-white shadow-2xl overflow-hidden;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.headerContent {
+  @apply flex items-center gap-6 p-8 relative z-10;
+}
+
+.iconBox {
+  @apply flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 border border-white/10 shadow-inner backdrop-blur-md;
 }
 
 .title {
-  @apply text-2xl font-bold text-gray-800;
+  @apply text-3xl font-black tracking-tight mb-1;
 }
 
 .subtitle {
-  @apply text-sm text-gray-500 mt-1;
+  @apply text-slate-400 text-sm font-medium;
 }
 
-/* ── Filters ── */
-.filters {
-  @apply flex flex-col sm:flex-row gap-3 items-start sm:items-center;
+/* --- Glass Filter Bar --- */
+.filterSection {
+  @apply flex flex-col xl:flex-row gap-4 p-4 bg-white/60 backdrop-blur-xl border border-white shadow-lg shadow-slate-200/50 rounded-[2rem];
+}
+
+.searchWrapper {
+  @apply relative flex-1 min-w-[280px];
+}
+
+.searchIcon {
+  @apply absolute left-5 top-1/2 -translate-y-1/2 text-slate-400;
 }
 
 .searchInput {
-  @apply px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 w-full sm:w-64;
+  @apply w-full h-14 pl-12 pr-6 rounded-2xl bg-white/80 border border-slate-200 text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm;
+}
+
+.classFiltersWrapper {
+  @apply flex flex-col sm:flex-row sm:items-center gap-3 bg-white/50 px-4 py-2 rounded-2xl border border-slate-100 flex-wrap overflow-hidden;
+}
+
+.filterLabel {
+  @apply flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest shrink-0;
 }
 
 .classFilters {
-  @apply flex gap-2 flex-wrap;
+  @apply flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide;
 }
 
 .filterBtn {
-  @apply px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-600 hover:bg-gray-100 transition duration-200 cursor-pointer;
+  @apply shrink-0 px-5 py-2.5 rounded-xl text-xs font-black text-slate-500 bg-white border border-slate-200 hover:border-slate-300 hover:text-slate-800 transition-all shadow-sm uppercase tracking-wide;
 }
 
 .filterBtnActive {
-  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700;
+  @apply bg-slate-900 text-white border-slate-900 hover:bg-slate-800 hover:text-white shadow-md shadow-slate-900/20;
 }
 
-/* ── Table ── */
-.tableWrapper {
-  @apply bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden;
+/* --- Data Table / Floating Rows --- */
+.dataWrapper {
+  @apply w-full overflow-x-auto;
 }
 
 .table {
-  @apply w-full text-sm;
+  @apply w-full border-separate border-spacing-y-3;
 }
 
 .tableHead {
-  @apply bg-gray-50 border-b border-gray-200;
+  @apply px-4;
 }
 
 .th {
-  @apply text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider;
+  @apply text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 pb-2 px-6;
 }
 
 .tableRow {
-  @apply border-b border-gray-100 hover:bg-blue-50 transition duration-150;
+  @apply bg-white/70 backdrop-blur-xl shadow-sm border border-white hover:bg-white/90 hover:shadow-md transition-all;
+}
+
+/* Rounded corners for separated table rows */
+.tableRow .td:first-child {
+  @apply rounded-l-[1.5rem] pl-6;
+}
+.tableRow .td:last-child {
+  @apply rounded-r-[1.5rem] pr-6;
 }
 
 .td {
-  @apply px-6 py-4 text-gray-700;
+  @apply py-4 px-4 align-middle border-t border-b border-white border-l-0 border-r-0;
 }
 
-/* ── Badges & Text ── */
+/* Cell Contents */
+.dateCell {
+  @apply flex items-baseline gap-2;
+}
+.dateDay {
+  @apply text-2xl font-black text-slate-900;
+}
+.dateMonth {
+  @apply text-xs font-bold text-slate-400 uppercase tracking-widest;
+}
+
 .classBadge {
-  @apply inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold;
+  @apply inline-flex px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-black uppercase tracking-tight border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition-colors;
 }
 
-.presentText {
-  @apply text-green-600 font-semibold;
+.statPillPresent {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[11px] font-black uppercase border border-emerald-100/50;
+}
+.statPillAbsent {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-500 rounded-lg text-[11px] font-black uppercase border border-rose-100/50;
 }
 
-.absentText {
-  @apply text-red-500 font-semibold;
+.totalCell {
+  @apply flex items-center gap-2 text-sm font-black text-slate-700;
 }
 
-.zeroText {
-  @apply text-gray-400 font-semibold;
+/* Mini Gauge */
+.ratioWrapper {
+  @apply flex justify-start sm:justify-end;
+}
+.miniGauge {
+  @apply relative w-12 h-12 flex items-center justify-center;
+}
+.gaugeSvg {
+  @apply absolute inset-0 w-full h-full -rotate-90 drop-shadow-sm;
+}
+.gaugeBg {
+  @apply fill-none stroke-slate-200 stroke-[3.5];
+}
+.gaugeFill {
+  @apply fill-none stroke-blue-500 stroke-[3.5];
+  stroke-linecap: round;
+}
+.gaugeText {
+  @apply text-[9px] font-black text-slate-800 z-10;
 }
 
-/* ── Progress Bar ── */
-.progressWrapper {
-  @apply flex items-center gap-3;
+/* Empty/Loading States */
+.loaderGrid {
+  @apply flex flex-col gap-3;
+}
+.skeletonRow {
+  @apply h-20 w-full bg-white/40 backdrop-blur-md rounded-[1.5rem] border border-white animate-pulse;
 }
 
-.progressBar {
-  @apply flex-1 bg-gray-200 rounded-full h-2 overflow-hidden;
-}
-
-.progressFill {
-  @apply h-2 rounded-full transition-all duration-500;
-}
-
-.progressGreen {
-  @apply bg-green-500;
-}
-
-.progressYellow {
-  @apply bg-yellow-400;
-}
-
-.progressRed {
-  @apply bg-red-400;
-}
-
-.percentageText {
-  @apply text-xs font-semibold text-gray-600 w-10 text-right;
-}
-
-/* ── Empty State ── */
 .emptyState {
-  @apply text-center py-12 text-gray-400 text-sm;
+  @apply flex flex-col items-center justify-center py-16 px-6 bg-white/40 backdrop-blur-md rounded-[2rem] border border-white text-sm font-bold text-slate-400 text-center;
+}
+
+/* --- Mobile Responsive (Card Layout) --- */
+@media (max-width: 768px) {
+  .desktopOnly {
+    @apply hidden;
+  }
+
+  .table,
+  tbody,
+  .tableRow,
+  .td {
+    @apply block w-full;
+  }
+
+  .tableRow {
+    @apply rounded-[2rem] p-5 mb-4 border border-white;
+  }
+
+  .tableRow .td:first-child,
+  .tableRow .td:last-child {
+    @apply rounded-none;
+  }
+
+  .td {
+    @apply flex items-center justify-between border-0 p-0 py-2.5;
+  }
+
+  /* Inject Labels on Mobile */
+  .td::before {
+    @apply content-[attr(data-label)] text-[10px] font-black uppercase tracking-[0.1em] text-slate-400;
+  }
+
+  .td:nth-child(1)::before {
+    content: "Date";
+  }
+  .td:nth-child(2)::before {
+    content: "Classroom";
+  }
+  .td:nth-child(3)::before {
+    content: "Present";
+  }
+  .td:nth-child(4)::before {
+    content: "Absent";
+  }
+  .td:nth-child(5)::before {
+    content: "Total Enrolled";
+  }
+  .td:nth-child(6)::before {
+    content: "Ratio";
+  }
+
+  /* Mobile specific cell alignments */
+  .dateCell {
+    @apply flex-col items-end gap-0;
+  }
+  .dateDay {
+    @apply text-lg;
+  }
+  .dateMonth {
+    @apply text-[9px];
+  }
 }

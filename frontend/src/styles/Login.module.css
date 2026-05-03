@@ -1,58 +1,104 @@
 @reference '../index.css';
 
 .page {
-  @apply flex h-screen w-full;
+  @apply flex min-h-dvh w-full;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 40rem),
+              linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
-/* ── Left Panel ── */
+/* Left Panel */
 .leftPanel {
-  @apply hidden lg:flex w-1/2 bg-blue-600 flex-col justify-between p-12 relative overflow-hidden;
+  @apply relative hidden w-[45%] flex-col justify-center overflow-hidden bg-slate-950 lg:flex;
+}
+
+.leftPanelContent {
+  @apply relative z-20 flex h-full flex-col justify-center px-16 xl:px-24;
 }
 
 .brandWrapper {
-  @apply relative z-10;
+  @apply mb-16;
+}
+
+.logoBadge {
+  @apply mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-inner backdrop-blur-xl;
 }
 
 .brandName {
-  @apply text-white text-4xl font-extrabold tracking-tight mb-4;
+  @apply mb-4 text-5xl font-black tracking-tight text-white;
 }
 
 .brandTagline {
-  @apply text-blue-100 text-lg font-medium leading-relaxed max-w-xs;
+  @apply max-w-md text-lg font-medium leading-relaxed text-slate-400;
 }
 
-.decoration {
-  @apply absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-500 opacity-40;
+.featurePreview {
+  @apply rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-md shadow-2xl;
 }
 
-/* ── Right Panel ── */
+.previewLine {
+  @apply mb-4 h-3 w-3/4 rounded-full bg-slate-800;
+}
+
+.previewLineShort {
+  @apply mb-4 h-3 w-1/2 rounded-full bg-slate-800;
+}
+
+.previewLineMedium {
+  @apply h-3 w-2/3 rounded-full bg-blue-500/20;
+}
+
+.decorationGlow {
+  @apply absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px] pointer-events-none;
+}
+
+.decorationCircle {
+  @apply absolute -bottom-32 -right-32 h-96 w-96 rounded-full border border-white/5 bg-gradient-to-tr from-blue-600/10 to-transparent pointer-events-none;
+}
+
+/* Right Panel */
 .rightPanel {
-  @apply flex-1 flex items-center justify-center bg-gray-50 px-6;
+  @apply relative flex flex-1 flex-col items-center justify-center gap-6 px-5 py-8 sm:px-6;
+}
+
+.mobileBrand {
+  @apply flex w-full max-w-md items-center gap-4 lg:hidden mb-2;
+}
+
+.mobileBrandMark {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-900 shadow-md;
+}
+
+.mobileBrandName {
+  @apply m-0 text-xl font-black text-slate-900 tracking-tight;
+}
+
+.mobileBrandTagline {
+  @apply m-0 text-[10px] font-bold uppercase tracking-widest text-blue-600;
 }
 
 .card {
-  @apply bg-white w-full max-w-md rounded-2xl shadow-xl p-10;
+  @apply w-full max-w-md rounded-[2.5rem] border border-white bg-white/70 p-8 shadow-2xl shadow-slate-200/50 backdrop-blur-xl lg:p-10;
 }
 
 .cardHeader {
-  @apply mb-8;
+  @apply mb-8 text-center sm:text-left;
 }
 
 .title {
-  @apply text-2xl font-bold text-gray-800 mb-1;
+  @apply mb-2 text-3xl font-black tracking-tight text-slate-900;
 }
 
 .subtitle {
-  @apply text-gray-500 text-sm;
+  @apply text-sm font-medium text-slate-500;
 }
 
-/* ── Form ── */
+/* Form */
 .form {
   @apply flex flex-col gap-5;
 }
 
 .fieldGroup {
-  @apply flex flex-col gap-1;
+  @apply flex flex-col gap-2;
 }
 
 .labelRow {
@@ -60,15 +106,15 @@
 }
 
 .label {
-  @apply text-sm font-medium text-gray-700;
+  @apply text-sm font-bold text-slate-700 ml-1;
 }
 
 .forgotLink {
-  @apply text-xs text-blue-600 hover:underline;
+  @apply text-xs font-bold text-blue-600 transition-colors hover:text-blue-800;
 }
 
 .input {
-  @apply w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200;
+  @apply min-h-[52px] w-full rounded-2xl border border-slate-200 bg-white/50 pl-11 pr-4 py-3 text-sm font-medium text-slate-900 placeholder-slate-400 transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10;
 }
 
 .passwordWrapper {
@@ -76,13 +122,21 @@
 }
 
 .passwordWrapper .input {
-  @apply pr-10;
+  @apply pr-12;
 }
 
 .eyeBtn {
-  @apply absolute right-3 top-1/2 -translate-y-1/2 text-sm cursor-pointer bg-transparent border-none;
+  @apply absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center cursor-pointer rounded-xl border-0 bg-transparent text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700;
 }
 
 .submitBtn {
-  @apply w-full py-2.5 rounded-lg bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 active:scale-95 transition duration-200 mt-2;
+  @apply mt-4 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-slate-800 hover:shadow-xl active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed;
+}
+
+.cardFooter {
+  @apply mt-8 text-center text-sm font-medium text-slate-500;
+}
+
+.cardFooter a {
+  @apply font-bold text-slate-900 underline decoration-slate-300 underline-offset-4 transition-colors hover:decoration-slate-900;
 }
