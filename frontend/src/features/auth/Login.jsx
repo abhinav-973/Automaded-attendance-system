@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/Login.module.css";
 import axiosInstance from "../../services/axiosInstance.js";
 import { handleSuccess, handleError } from "../../utils/utils.js";
@@ -183,7 +183,7 @@ const Login = ({ setAuthState }) => {
           </form>
           
           <footer className={styles.cardFooter}>
-            <p>Don't have an account? <a href="/register">Create one</a></p>
+            <p>Don't have an account? <Link to="/register">Create one</Link></p>
           </footer>
         </motion.div>
       </main>

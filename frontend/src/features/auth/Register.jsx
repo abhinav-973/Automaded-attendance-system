@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/Login.module.css";
 import axiosInstance from "../../services/axiosInstance.js";
 import { handleSuccess, handleError } from "../../utils/utils.js";
@@ -199,7 +199,7 @@ const Register = () => {
           </form>
           
           <footer className={styles.cardFooter}>
-            <p>Already have an account? <a href="/login">Sign in</a></p>
+            <p>Already have an account? <Link to="/login">Sign in</Link></p>
           </footer>
         </motion.div>
       </main>
