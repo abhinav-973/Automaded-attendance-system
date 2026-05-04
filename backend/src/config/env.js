@@ -62,7 +62,8 @@ const buildCookieOptions = () => ({
     httpOnly: true,
     secure: cookieSecure,
     sameSite: cookieSameSite,
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days for refresh token
 });
 
 // ✅ Cookie options (LOGOUT)
@@ -70,6 +71,7 @@ const buildClearCookieOptions = () => ({
     httpOnly: true,
     secure: cookieSecure,
     sameSite: cookieSameSite,
+    path: "/",
 });
 
 export {
