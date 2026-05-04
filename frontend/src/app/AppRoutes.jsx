@@ -1,13 +1,13 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+
 import MainLayout from "../MainLayout";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import Dashboard from "../features/dashboard/Dashboard";
 import AttendanceHistory from "../pages/AttendanceHistory";
-import RefreshHandler from "../components/ui/RefreshHandler";
 import AdminUpload from "../pages/AdminUpload";
-import { getStoredUser } from "../utils/auth";
+import RefreshHandler from "../components/ui/RefreshHandler";
 
 const LoadingScreen = () => (
   <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-600">
@@ -16,9 +16,7 @@ const LoadingScreen = () => (
 );
 
 const ProtectedRoute = ({ authState, allowedRoles, children }) => {
-  if (!authState.isReady) {
-    return <LoadingScreen />;
-  }
+  if (!authState.isReady) return <LoadingScreen />;
 
   if (!authState.isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -32,9 +30,7 @@ const ProtectedRoute = ({ authState, allowedRoles, children }) => {
 };
 
 const PublicOnlyRoute = ({ authState, children }) => {
-  if (!authState.isReady) {
-    return <LoadingScreen />;
-  }
+  if (!authState.isReady) return <LoadingScreen />;
 
   if (authState.isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
@@ -44,30 +40,32 @@ const PublicOnlyRoute = ({ authState, children }) => {
 };
 
 function AppRoutes() {
-  const [authState, setAuthState] = useState(() => {
-    const storedUser = getStoredUser();
-
-    return {
-      isAuthenticated: Boolean(storedUser),
-      user: storedUser,
-      isReady: false,
-    };
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    user: null,
+    isReady: false,
   });
 
   return (
     <div>
+      {/* 🔄 Token validation and refresh on mount */}
       <RefreshHandler setAuthState={setAuthState} />
+
       <Routes>
         <Route
           path="/"
           element={
             authState.isReady ? (
-              <Navigate to={authState.isAuthenticated ? "/dashboard" : "/login"} replace />
+              <Navigate
+                to={authState.isAuthenticated ? "/dashboard" : "/login"}
+                replace
+              />
             ) : (
               <LoadingScreen />
             )
           }
         />
+
         <Route
           path="/login"
           element={
@@ -76,6 +74,7 @@ function AppRoutes() {
             </PublicOnlyRoute>
           }
         />
+
         <Route
           path="/register"
           element={

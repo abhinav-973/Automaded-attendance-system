@@ -33,15 +33,22 @@ const Login = ({ setAuthState }) => {
 
     try {
       const response = await axiosInstance.post("/auth/login", loginInfo);
-      const { success, message, teacher } = response.data;
+      const { success, message, teacher, accessToken } = response.data;
 
       if (success) {
+        // ✅ Store accessToken in localStorage (for Authorization header)
+        localStorage.setItem("accessToken", accessToken);
+        
+        // ✅ Store user info
         setStoredUser(teacher);
+        
+        // ✅ Update auth state
         setAuthState({
           isAuthenticated: true,
           user: teacher,
           isReady: true,
         });
+        
         handleSuccess(message);
         setTimeout(() => navigate("/dashboard", { replace: true }), 800);
       }

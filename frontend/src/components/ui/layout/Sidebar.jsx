@@ -34,7 +34,10 @@ const Sidebar = ({ setAuthState, isCollapsed, setIsCollapsed }) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
+      // ✅ Clear all auth data
+      localStorage.removeItem("accessToken");
       clearStoredUser();
+      
       setAuthState({
         isAuthenticated: false,
         user: null,

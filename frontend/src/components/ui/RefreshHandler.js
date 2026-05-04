@@ -1,69 +1,58 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../services/axiosInstance.js";
-import { clearStoredUser, setStoredUser } from "../../utils/auth.js";
+import { jwtDecode } from "jwt-decode";
+import { getStoredUser } from "../../utils/auth.js";
 
 const RefreshHandler = ({ setAuthState }) => {
-  const navigate = useNavigate();
-
   useEffect(() => {
-    let isMounted = true;
+    const token = localStorage.getItem("accessToken");
 
-    const setUnauthenticated = () => {
-      clearStoredUser();
+    // ❌ No token stored = not authenticated
+    if (!token) {
       setAuthState({
         isAuthenticated: false,
         user: null,
         isReady: true,
       });
-    };
+      return;
+    }
 
-    const checkAuth = async () => {
-      try {
-        const response = await axiosInstance.get("/auth/me");
+    try {
+      const decoded = jwtDecode(token);
+      const now = Date.now();
+      const expiresAt = decoded.exp * 1000;
 
-        if (!isMounted) {
-          return;
-        }
-
-        if (!response.data.success) {
-          setUnauthenticated();
-          return;
-        }
-
-        setStoredUser(response.data.teacher);
+      // ❌ Token expired = clear and mark as unauthenticated
+      if (expiresAt < now) {
+        localStorage.removeItem("accessToken");
         setAuthState({
-          isAuthenticated: true,
-          user: response.data.teacher,
+          isAuthenticated: false,
+          user: null,
           isReady: true,
         });
-
-        const currentPath = window.location.pathname;
-
-        if (currentPath === "/" || currentPath === "/login" || currentPath === "/register") {
-          navigate("/dashboard", { replace: true });
-        }
-      } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-
-        const status = error.response?.status;
-
-        if (status === 401 || status === 403 || status === 404) {
-          setUnauthenticated();
-        }
+        return;
       }
-    };
 
-    checkAuth();
+      // ✅ Token valid = get stored user and authenticate
+      const storedUser = getStoredUser();
+      
+      setAuthState({
+        isAuthenticated: true,
+        user: storedUser || decoded,
+        isReady: true,
+      });
+    } catch (err) {
+      // ❌ Invalid token format = clear and unauthenticate
+      console.error("Token validation error:", err);
+      localStorage.removeItem("accessToken");
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        isReady: true,
+      });
+    }
+  }, [setAuthState]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [navigate, setAuthState]);
-
-  return null;
+  return null; // This is a logic-only component
 };
 
 export default RefreshHandler;
