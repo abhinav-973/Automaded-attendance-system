@@ -50,7 +50,7 @@ function AppRoutes() {
     return {
       isAuthenticated: Boolean(storedUser),
       user: storedUser,
-      isReady: true,
+      isReady: false,
     };
   });
 
