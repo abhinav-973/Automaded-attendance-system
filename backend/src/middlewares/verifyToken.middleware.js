@@ -11,6 +11,10 @@ const verifyToken = async (req, res, next) => {
 
         const token = authHeader.substring(7); // Remove "Bearer " prefix
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (decoded.tokenType !== "access" || !decoded.id) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
         
         req.user = decoded;  // ← sets req.user.id for all protected routes
         next();

@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 const splitCsv = (value = "") =>
     value
         .split(",")
@@ -43,7 +45,7 @@ if (isProduction) {
 }
 
 // 🔧 Face service config
-const faceServiceUrl = process.env.FACE_SERVICE_URL || "http://localhost:5001";
+const faceServiceUrl = process.env.FACE_SERVICE_URL || "http://127.0.0.1:8000";
 const faceServiceTimeoutMs = parsePositiveInteger(
     process.env.FACE_SERVICE_TIMEOUT_MS,
     180000

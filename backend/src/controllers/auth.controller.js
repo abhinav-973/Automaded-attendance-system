@@ -14,13 +14,13 @@ import { buildCookieOptions, buildClearCookieOptions } from "../config/env.js";
 
 const generateAccessToken = (user) =>
   jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
+    { id: user._id, email: user.email, role: user.role, tokenType: "access" },
     process.env.JWT_SECRET,
     { expiresIn: "15m" }, // short-lived
   );
 
 const generateRefreshToken = (user) =>
-  jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, {
+  jwt.sign({ id: user._id, tokenType: "refresh" }, process.env.JWT_REFRESH_SECRET, {
     expiresIn: "7d",
   });
 
@@ -176,6 +176,12 @@ const refreshTokenHandler = async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
+    if (decoded.tokenType !== "refresh" || !decoded.id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid refresh token" });
+    }
+
     const user = await AuthSchema.findById(decoded.id);
 
     if (!user) {
@@ -185,7 +191,7 @@ const refreshTokenHandler = async (req, res) => {
     const role = await syncResolvedRole(user);
 
     const newAccessToken = jwt.sign(
-      { id: user._id, email: user.email, role },
+      { id: user._id, email: user.email, role, tokenType: "access" },
       process.env.JWT_SECRET,
       { expiresIn: "15m" },
     );

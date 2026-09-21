@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/register', registerValidation, registerTeacher);
 router.post('/login',    loginValidation,    loginTeacher);
 router.get('/me',        verifyToken,        getMe);
-router.post('/logout',   verifyToken,        logoutTeacher);
+router.post('/logout',   logoutTeacher);
 router.get("/refresh", refreshTokenHandler);
 
 export default router;

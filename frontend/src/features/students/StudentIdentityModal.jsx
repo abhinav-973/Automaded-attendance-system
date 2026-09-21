@@ -11,7 +11,6 @@ const normalizeIdentity = (value) =>
 
 const StudentIdentityModal = ({
   classId,
-  label,
   triggerLabel = "Map Model Names",
 }) => {
   const [open, setOpen] = useState(false);

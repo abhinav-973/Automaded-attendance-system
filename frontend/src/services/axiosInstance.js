@@ -1,10 +1,30 @@
 import axios from "axios";
+import { clearStoredUser } from "../utils/auth.js";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
   timeout: 30000,
 });
+
+let refreshPromise;
+
+const clearAuthStorage = () => {
+  localStorage.removeItem("accessToken");
+  clearStoredUser();
+};
+
+const refreshAccessToken = async () => {
+  const response = await axiosInstance.get("/auth/refresh");
+  const accessToken = response.data?.accessToken;
+
+  if (!accessToken) {
+    throw new Error("Refresh response did not include an access token");
+  }
+
+  localStorage.setItem("accessToken", accessToken);
+  return accessToken;
+};
 
 // 🔐 REQUEST INTERCEPTOR
 axiosInstance.interceptors.request.use((config) => {
@@ -27,21 +47,26 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
 
       try {
-        const res = await axiosInstance.get("/auth/refresh");
+        refreshPromise ??= refreshAccessToken().finally(() => {
+          refreshPromise = undefined;
+        });
 
-        localStorage.setItem("accessToken", res.data.accessToken);
-
-        originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
+        const accessToken = await refreshPromise;
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         return axiosInstance(originalRequest);
-      } catch (err) {
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login";
+      } catch (refreshError) {
+        clearAuthStorage();
+        if (window.location.pathname !== "/login") {
+          window.location.assign("/login");
+        }
+        return Promise.reject(refreshError);
       }
     }
 
