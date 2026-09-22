@@ -233,7 +233,7 @@ const AdminUpload = () => {
             <div className="mt-3 flex items-start gap-2 rounded-xl bg-slate-200/50 p-3 text-slate-600">
               <Info size={16} className="shrink-0 mt-0.5 text-slate-500" />
               <p className="text-[11px] font-medium leading-relaxed">
-                <span className="font-bold text-slate-700">Note:</span> Columns wrapped in brackets <code>[ ]</code> are optional. If <code>modelIdentity</code> is omitted, students must upload identity photos manually upon first login.
+                <span className="font-bold text-slate-700">Note:</span> Columns wrapped in brackets <code>[ ]</code> are optional. If <code>modelIdentity</code> is omitted, the teacher can map the student to the corresponding recognition-model identity later.
               </p>
             </div>
 

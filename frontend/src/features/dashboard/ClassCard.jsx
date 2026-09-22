@@ -58,12 +58,12 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 
 
       <div className={styles.cardFooter}>
         <TakeAttendance classId={id} label={label} />
-        <StudentIdentityModal
+        {/* <StudentIdentityModal
           classId={id}
           label={label}
           triggerLabel="Review Models"
           triggerClassName={styles.ghostBtn}
-        />
+        /> */}
       </div>
     </motion.div>
   );

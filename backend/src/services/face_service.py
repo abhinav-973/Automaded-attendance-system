@@ -41,7 +41,6 @@ class Student(BaseModel):
     name: str
     roll: str
     modelIdentity: str | None = None
-    image: str | None = None
 
 
 class RecognizeRequest(BaseModel):
@@ -143,11 +142,6 @@ def get_recognized_rolls(classroom_image_b64: str, students: list[Student]) -> s
             "roll": student.roll,
             "modelIdentity": student.modelIdentity,
         }
-
-        if student.image:
-            payload["image_b64"] = student.image
-            payload["image"] = decode_base64_image(student.image)
-
         student_payload.append(payload)
 
     handler = load_model_handler()

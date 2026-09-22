@@ -23,44 +23,7 @@ const getStudentsByClass = async (req, res) => {
     }
 };
 
-const enrollStudentFace = async (req, res) => {
-    try {
-        const { studentId } = req.params;
-        const { image } = req.body;
 
-        if (!image) {
-            return res.status(400).json({
-                success: false,
-                message: "image is required",
-            });
-        }
-
-        const student = await Student.findById(studentId);
-        if (!student) {
-            return res.status(404).json({ success: false, message: "Student not found" });
-        }
-
-        const classDoc = await Class.findOne({ _id: student.classId, teacherId: req.user.id });
-        if (!classDoc) {
-            return res.status(403).json({
-                success: false,
-                message: "You are not allowed to update this student",
-            });
-        }
-
-        student.faceImage = image;
-        await student.save();
-
-        res.status(200).json({
-            success: true,
-            message: "Student face enrolled successfully",
-            student,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
-    }
-};
 
 const updateStudentModelIdentity = async (req, res) => {
     try {
@@ -118,7 +81,6 @@ const getAvailableModelIdentities = async (req, res) => {
 
 export {
     getStudentsByClass,
-    enrollStudentFace,
     updateStudentModelIdentity,
     getAvailableModelIdentities,
 };
