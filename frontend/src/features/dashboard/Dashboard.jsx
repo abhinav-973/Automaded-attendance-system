@@ -73,6 +73,7 @@ const Dashboard = () => {
                     label={cls.name}
                     totalStudents={cls.totalStudents}
                     lastAttendance={cls.lastAttendance}
+                    lastAttendanceId={cls.lastAttendanceId}
                     mappedStudents={cls.mappedStudents}
                     unmappedStudents={cls.unmappedStudents}
                     needsModelMapping={cls.needsModelMapping}

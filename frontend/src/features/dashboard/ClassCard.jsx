@@ -1,16 +1,58 @@
 import styles from "../../styles/Dashboard.module.css";
 import TakeAttendance from "../attendance/TakeAttendance.jsx";
-import StudentIdentityModal from "../students/StudentIdentityModal.jsx";
+import axiosInstance from "../../services/axiosInstance.js";
+import { Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { Users, Calendar, ArrowRight } from "lucide-react";
 
-const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 0, needsModelMapping = false }) => {
-  const progress = totalStudents > 0 ? Math.round((mappedStudents / totalStudents) * 100) : 0;
+const ClassCard = ({
+  id,
+  label,
+  totalStudents,
+  lastAttendance,
+  lastAttendanceId,
+  mappedStudents = 0,
+  needsModelMapping = false,
+}) => {
+  const progress =
+    totalStudents > 0 ? Math.round((mappedStudents / totalStudents) * 100) : 0;
   const strokeDasharray = 2 * Math.PI * 34; // Circumference for r=34
   const offset = strokeDasharray - (progress / 100) * strokeDasharray;
+  const downloadLastReport = async () => {
+    if (!lastAttendanceId) {
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(
+        `/attendance/report/${lastAttendanceId}`,
+        {
+          responseType: "blob",
+        },
+      );
+
+      const blob = new Blob([response.data], {
+        type: "text/csv",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `attendance_${label.replace(/\s+/g, "_")}.csv`;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download attendance report:", error);
+    }
+  };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={styles.glassCard}
@@ -22,7 +64,13 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 
         </div>
         <div className={styles.statusBadge}>
           <span className={styles.pulseDot} />
-          {lastAttendance ? 'Last: ' + new Date(lastAttendance).toLocaleDateString('en-IN', {day:'2-digit', month:'short'}) : 'New Class'}
+          {lastAttendance
+            ? "Last: " +
+              new Date(lastAttendance).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+              })
+            : "New Class"}
         </div>
       </div>
 
@@ -30,9 +78,11 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 
         <div className={styles.gaugeWrapper}>
           <svg className={styles.gaugeSvg} viewBox="0 0 80 80">
             <circle className={styles.gaugeBg} cx="40" cy="40" r="34" />
-            <motion.circle 
-              className={styles.gaugeFill} 
-              cx="40" cy="40" r="34"
+            <motion.circle
+              className={styles.gaugeFill}
+              cx="40"
+              cy="40"
+              r="34"
               strokeDasharray={strokeDasharray}
               initial={{ strokeDashoffset: strokeDasharray }}
               animate={{ strokeDashoffset: offset }}
@@ -51,7 +101,7 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 
             <p>Know start mapping or finish radial mapping below.</p>
           </div>
           {needsModelMapping && (
-             <div className={styles.alertBox}>Setup Required</div>
+            <div className={styles.alertBox}>Setup Required</div>
           )}
         </div>
       </div>
@@ -64,6 +114,16 @@ const ClassCard = ({ id, label, totalStudents, lastAttendance, mappedStudents = 
           triggerLabel="Review Models"
           triggerClassName={styles.ghostBtn}
         /> */}
+        {lastAttendanceId && (
+          <button
+            type="button"
+            onClick={downloadLastReport}
+            className={styles.ghostBtn}
+          >
+            <Download size={16} />
+            Download Last Report
+          </button>
+        )}
       </div>
     </motion.div>
   );
