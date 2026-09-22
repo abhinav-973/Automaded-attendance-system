@@ -14,10 +14,6 @@ const studentSchema = new mongoose.Schema({
         ref: "Class",
         required: true,
     },
-    faceImage: {
-        type: String,   // ← base64 encoded face image (was faceDescriptor)
-        default: null,
-    },
 }, { timestamps: true });
 
 const Student = mongoose.model("Student", studentSchema);

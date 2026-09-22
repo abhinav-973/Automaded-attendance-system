@@ -40,7 +40,6 @@ const takeAttendance = async (req, res) => {
             name: student.name,
             roll: student.roll,
             modelIdentity: student.modelIdentity || null,
-            image: student.faceImage || null,
         }));
 
         const recognitionResponses = await Promise.all(
