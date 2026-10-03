@@ -127,6 +127,7 @@ def load_optional_model_function(function_name: str):
         if handler is not None:
             return handler
 
+
     raise RuntimeError(
         f"CV adapter function '{function_name}' could not be loaded."
     ) from last_error

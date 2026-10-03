@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import time
 from pathlib import Path
 from threading import Lock
 
@@ -120,6 +121,7 @@ class FriendModelPipeline:
             )
 
     def recognize_present_students(self, classroom_image, students):
+        start = time.perf_counter()
         roster_by_name = _build_roster_index(students)
         if not roster_by_name:
             logger.warning("No class roster names were eligible for direct recognition.")
@@ -154,6 +156,7 @@ class FriendModelPipeline:
                     "Predicted '%s' but no matching student was found in the selected class roster.",
                     result.name,
                 )
+        print(f"Recognition took {time.perf_counter() - start:.2f}s for {len(detections)} faces")
 
         return recognized_rolls
 
